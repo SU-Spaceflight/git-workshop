@@ -1,0 +1,19 @@
+name: checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  attendees:
+    name: Check ATTENDEES.md
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No leftover conflict markers
+        run: |
+          if grep -nE '^(<<<<<<<|=======|>>>>>>>)' ATTENDEES.md; then
+            echo "::error file=ATTENDEES.md::Remove the conflict markers (<<<<<<<, =======, >>>>>>>) before merging"
+            exit 1
+          fi
+          echo "ATTENDEES.md looks clean"
